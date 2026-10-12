@@ -104,7 +104,7 @@ python3 -m unittest discover -s tests -v
 
 Tests use stdlib `unittest`. Node.js 18 or later runs the inline JavaScript export checks and a small DOM fixture for the full script. Those four tests skip when Node is missing. The fixture checks behavior, not browser layout or actual clipboard access.
 
-PRs are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) and [CLA.md](CLA.md) before contributing. Licensed under [GPL-3.0-only](LICENSE).
+PRs are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) before contributing. Licensed under [MIT](LICENSE).
 
 For your next draft, copy the example spec, replace its fictional copy, and build a new page.
 
