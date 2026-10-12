@@ -1,0 +1,435 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: GPL-3.0-only -->
+<!-- Copyright (c) 2026 Ninon -->
+<html lang="__LANG__">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<style>
+/* One reading column; the red accent marks lines to change. */
+:root {
+  --paper: #F3F5F8;
+  --ink: #1A2330;
+  --ink-2: #5B6776;
+  --rule: #DAE0E8;
+  --indigo: #2E5C8A;
+  --indigo-wash: #E3EAF2;
+  --mark: #BF3A22;
+  --mark-ink: #FFFFFF;
+  --mark-wash: #F8E6E0;
+  --field: #FFFFFF;
+  --display: Georgia, "Songti SC", "STSong", serif;
+  --body: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #10171F; --ink: #E5EBF1; --ink-2: #9AA7B6; --rule: #253140;
+    --indigo: #8DB4DE; --indigo-wash: #1B2836; --mark: #EF7B62; --mark-ink: #1A0E0A;
+    --mark-wash: #36211C; --field: #17202B; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #10171F; --ink: #E5EBF1; --ink-2: #9AA7B6; --rule: #253140;
+  --indigo: #8DB4DE; --indigo-wash: #1B2836; --mark: #EF7B62; --mark-ink: #1A0E0A;
+  --mark-wash: #36211C; --field: #17202B; color-scheme: dark;
+}
+body { background: var(--paper); color: var(--ink); font-family: var(--body); }
+.wrap { max-width: 720px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 64px; }
+h1 { font-family: var(--display); font-weight: 600; font-size: 1.75rem; letter-spacing: 0.02em; margin: 0 0 10px; text-wrap: balance; }
+.intro { color: var(--ink-2); font-size: 0.95rem; line-height: 1.7; margin: 0; max-width: 40em; }
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 2; background: var(--paper); border-bottom: 1px solid var(--rule);
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding-block: 10px; margin-top: 18px; }
+.count { font-size: 0.95rem; font-variant-numeric: tabular-nums; }
+.count b { color: var(--mark); font-weight: 600; }
+.toggle { font: inherit; font-size: 0.9rem; color: var(--indigo); background: transparent; border: 1px solid var(--indigo);
+  border-radius: 6px; padding: 4px 12px; min-height: 36px; cursor: pointer; }
+.toggle[aria-pressed="true"] { background: var(--indigo); color: var(--paper); }
+.status { font-size: 0.85rem; color: var(--ink-2); margin-left: auto; }
+nav.sections { display: flex; gap: 8px; overflow-x: auto; padding-block: 10px 2px; scrollbar-width: none; }
+nav.sections a { flex: none; font-size: 0.85rem; color: var(--ink); text-decoration: none; background: var(--indigo-wash);
+  border-radius: 6px; padding: 6px 10px; font-variant-numeric: tabular-nums; }
+nav.sections a span { color: var(--ink-2); margin-left: 4px; }
+section { margin-top: 36px; }
+h2 { font-family: var(--display); font-weight: 600; font-size: 1.25rem; margin: 0 0 4px; }
+.secnote { color: var(--ink-2); font-size: 0.85rem; margin: 0 0 8px; }
+.group { margin-top: 18px; }
+.ghead { display: flex; align-items: baseline; gap: 8px; font-size: 0.8rem; color: var(--ink-2); letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--rule); padding-bottom: 4px; }
+.ghead code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.75rem; letter-spacing: 0; }
+.row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: start;
+  padding: 10px 8px; border-bottom: 1px solid var(--rule); border-radius: 4px; }
+.row.flagged { background: var(--mark-wash); }
+.line { margin: 0; font-size: 1.06rem; line-height: 1.65; word-break: break-word; white-space: pre-line; }
+.ph { font-size: 0.8em; color: var(--indigo); background: var(--indigo-wash); border-radius: 4px; padding: 0 4px; margin: 0 1px; white-space: nowrap; }
+.hint { grid-column: 1; margin: 0; font-size: 0.8rem; color: var(--ink-2); line-height: 1.5; }
+.own { display: inline-block; margin-left: 8px; font-size: 0.72rem; color: var(--indigo); border: 1px solid var(--indigo);
+  border-radius: 4px; padding: 0 5px; vertical-align: 2px; }
+.mark { grid-column: 2; grid-row: 1 / span 2; width: 44px; height: 44px; padding: 0; border-radius: 50%; border: 1.5px dashed var(--ink-2);
+  background: transparent; color: var(--ink-2); font-family: var(--display); font-size: 0.85rem; letter-spacing: 0.02em; cursor: pointer; line-height: 1; }
+.mark:hover { border-style: solid; color: var(--ink); }
+.mark[aria-pressed="true"] { border: 2px solid var(--mark); background: var(--mark); color: var(--mark-ink); transform: rotate(-8deg); }
+.mark:focus-visible, .toggle:focus-visible, textarea:focus-visible, nav a:focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; }
+.note { grid-column: 1 / -1; display: grid; gap: 4px; }
+.note label { font-size: 0.8rem; color: var(--ink-2); }
+.note textarea { font: inherit; font-size: 1rem; color: var(--ink); background: var(--field); border: 1px solid var(--rule);
+  border-radius: 6px; padding: 8px 10px; min-height: 2.6em; resize: vertical; width: 100%; box-sizing: border-box; }
+.hide-unflagged .row:not(.flagged), .hide-unflagged .group.empty, .hide-unflagged section.empty { display: none; }
+.empty-flags { display: none; color: var(--ink-2); margin-top: 28px; }
+.hide-unflagged.none-flagged .empty-flags { display: block; }
+.picks { margin-top: 28px; border: 1px solid var(--rule); border-top: 3px solid var(--mark); border-radius: 4px 4px 8px 8px; padding: 14px 16px 6px; background: var(--field); }
+.picks .opt { background: var(--paper); }
+.picks h2 { margin-bottom: 2px; }
+.pick { padding-block: 12px; border-bottom: 1px solid var(--rule); display: grid; gap: 8px; }
+.pick:last-child { border-bottom: 0; }
+.pick .ctx { font-size: 0.8rem; color: var(--ink-2); letter-spacing: 0.04em; }
+.pick .old { margin: 0; color: var(--ink-2); text-decoration: line-through; font-size: 0.95rem; }
+.opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.opt { white-space: pre-line; font: inherit; font-size: 1rem; color: var(--ink); background: var(--field); border: 1px solid var(--rule); border-radius: 8px; padding: 6px 12px; cursor: pointer; text-align: left; }
+.opt[aria-pressed="true"] { border: 2px solid var(--mark); padding: 5px 11px; }
+.opt:focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; }
+.pick textarea { font: inherit; font-size: 1rem; color: var(--ink); background: var(--field); border: 1px solid var(--rule); border-radius: 6px; padding: 6px 10px; min-height: 2.2em; width: 100%; box-sizing: border-box; resize: vertical; }
+.pick .mine { font-size: 0.8rem; color: var(--ink-2); }
+@media (prefers-reduced-motion: no-preference) { .mark { transition: transform 120ms ease-out, background-color 120ms; } }
+.export { font: inherit; font-size: 0.9rem; font-weight: 600; color: var(--mark-ink); background: var(--mark); border: 0; border-radius: 6px; padding: 5px 14px; min-height: 36px; cursor: pointer; }
+.export:focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; }
+.out { margin-top: 12px; display: grid; gap: 6px; }
+.out textarea { font: 0.85rem/1.5 ui-monospace, "SF Mono", Menlo, monospace; color: var(--ink); background: var(--field); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 10px; min-height: 10em; width: 100%; box-sizing: border-box; }
+body { margin: 0; }
+[hidden] { display: none !important; }
+
+h1, h2, .intro, .secnote, .ctx { overflow-wrap: anywhere; }
+section { scroll-margin-top: 100px; }
+@media (max-width: 640px) { .toggle, .export { min-height: 44px; } nav.sections a { padding-block: 10px; } }
+</style>
+</head>
+<body>
+<main class="wrap" id="app">
+  <h1>__TITLE__</h1>
+  <p class="intro">__INTRO__ <span id="total"></span></p>
+  <section class="picks" id="picks" hidden>
+    <h2 data-ui="picksHeading"></h2>
+    <p class="secnote" id="picksnote"></p>
+    <div id="picklist"></div>
+  </section>
+  <div class="bar">
+    <span class="count"><b id="flagged">0</b> <span data-ui="marked"></span></span>
+    <button class="toggle" id="only" type="button" aria-pressed="false" data-ui="only"></button>
+    <button class="export" id="export" type="button" data-ui="copy"></button>
+    <span class="status" id="status" role="status" aria-live="polite"></span>
+  </div>
+  <div class="out" id="out" hidden>
+    <label for="outtext" class="secnote" id="outlabel"></label>
+    <textarea id="outtext" readonly></textarea>
+  </div>
+  <nav class="sections" id="nav"></nav>
+  <div id="list"></div>
+  <p class="empty-flags" data-ui="empty"></p>
+</main>
+<script type="application/json" id="meta">__META__</script>
+<script type="application/json" id="data">__DATA__</script>
+<script type="application/json" id="picksdata">__PICKS__</script>
+<script>
+const UI = {
+  en: {
+    total: '{n} lines.', marked: 'marked', only: 'Show marked only', copy: 'Copy review',
+    picksHeading: 'Choose a rewrite', picksNote: 'Choose a candidate or write your own. Nothing is selected by default.',
+    sections: 'Sections', empty: 'No lines marked yet.', ownBadge: 'Your words', mark: 'Edit',
+    markLabel: 'Mark this line for change', unmarkLabel: 'Remove this line’s mark',
+    wording: 'Your wording or instruction (optional)', pickOwn: 'Or write your own',
+    saved: 'Saved in this browser', restored: 'Previous marks restored',
+    storageError: 'Marks cannot be saved here. Copy your review before closing.',
+    copied: 'Copied', copyFailed: 'Select the text and press Ctrl+C or Command+C.',
+    copyDone: 'Copied. Paste the review back to the writer. You can also copy the text below.',
+    copyManual: 'Copy the text below with Ctrl+A, Ctrl+C (Command on Mac). Paste it back to the writer.',
+    review: 'Review: ', unmarked: ' (unmarked)', original: 'Original: ', wordingExport: 'My wording: ',
+    noneWritten: '(not written)', pick: 'Choice ', selected: 'Selected: ', noneSelected: '(not selected)',
+    ownExport: 'My own: ', noMarks: 'No marks or choices. Keep all lines as written.'
+  },
+  'zh-CN': {
+    total: '共 {n} 条。', marked: '条已标记', only: '只看已标记', copy: '复制审阅结果',
+    picksHeading: '选择改写', picksNote: '选一句候选，或者写你自己的。默认不选任何一句。',
+    sections: '分区', empty: '还没有标记任何一句。', ownBadge: '你写的', mark: '改',
+    markLabel: '标记这一句', unmarkLabel: '取消这一句的标记',
+    wording: '你的说法或修改要求（可不写）', pickOwn: '或者写你自己的',
+    saved: '已保存在这个浏览器', restored: '已恢复上次的标记',
+    storageError: '这里无法保存标记，关闭前请复制审阅结果。',
+    copied: '已复制', copyFailed: '选中文字后按 Ctrl+C，Mac 按 Command+C。',
+    copyDone: '已复制。粘贴给写作者即可，也可以复制下面的文字。',
+    copyManual: '在下面框内按 Ctrl+A、Ctrl+C 复制，Mac 使用 Command 键，再粘贴给写作者。',
+    review: '审阅结果：', unmarked: '（取消了标记）', original: '原文：', wordingExport: '我的说法：',
+    noneWritten: '（没写）', pick: '选 ', selected: '选了：', noneSelected: '（没选）',
+    ownExport: '我写的：', noMarks: '没有标记或选择，全部保留原文。'
+  }
+};
+
+function formatExport(title, items, picks, flags, pickState, ui) {
+  const lines = [ui.review + title];
+  for (const it of items) {
+    const f = flags.get(it.id);
+    if (!f || (!f.flag && !f.note)) continue;
+    lines.push('', '[' + it.id + ']' + (f.flag ? '' : ui.unmarked),
+      ui.original + it.text, ui.wordingExport + (f.note || ui.noneWritten));
+  }
+  for (const p of picks) {
+    const st = pickState.get(p.key);
+    if (!st || (st.choice == null && !st.own)) continue;
+    lines.push('', '[' + ui.pick + p.key + ']',
+      ui.selected + (Number.isInteger(st.choice) ? p.options[st.choice] : ui.noneSelected),
+      ui.ownExport + (st.own || ui.noneWritten));
+  }
+  if (lines.length === 1) lines.push('', ui.noMarks);
+  return lines.join('\n');
+}
+
+(function () {
+  const items = JSON.parse(document.getElementById('data').textContent);
+  const meta = JSON.parse(document.getElementById('meta').textContent);
+  const ui = UI[meta.lang];
+  const SECTIONS = meta.sections.map(s => [s.id, s.title, s.note || '']);
+  const flags = new Map();
+  const rows = new Map();
+  const list = document.getElementById('list');
+  const nav = document.getElementById('nav');
+  const status = document.getElementById('status');
+  document.querySelectorAll('[data-ui]').forEach(el => { el.textContent = ui[el.dataset.ui]; });
+  nav.setAttribute('aria-label', ui.sections);
+  document.getElementById('picksnote').textContent = meta.picks_note ?? ui.picksNote;
+  document.getElementById('total').textContent = ui.total.replace('{n}', items.length);
+
+  function textWithPlaceholders(el, text) {
+    const parts = text.split(/(\{[a-zA-Z_]+\})/);
+    for (const p of parts) {
+      if (/^\{[a-zA-Z_]+\}$/.test(p)) {
+        const s = document.createElement('span');
+        s.className = 'ph';
+        s.textContent = p;
+        el.appendChild(s);
+      } else if (p) {
+        el.appendChild(document.createTextNode(p));
+      }
+    }
+  }
+
+  for (const [sec, title, note] of SECTIONS) {
+    const mine = items.filter(x => x.sec === sec);
+    if (!mine.length) continue;
+    const a = document.createElement('a');
+    a.href = '#section-' + sec;
+    a.textContent = title;
+    const n = document.createElement('span');
+    n.textContent = mine.length;
+    a.appendChild(n);
+    nav.appendChild(a);
+    const s = document.createElement('section');
+    s.id = 'section-' + sec;
+    const h = document.createElement('h2');
+    h.textContent = title;
+    const p = document.createElement('p');
+    p.className = 'secnote';
+    p.textContent = note;
+    s.append(h, p);
+    let group = null, gkey = null;
+    for (const it of mine) {
+      if (it.group !== gkey) {
+        gkey = it.group;
+        group = document.createElement('div');
+        group.className = 'group';
+        const gh = document.createElement('div');
+        gh.className = 'ghead';
+        if (it.ctx) {
+          gh.textContent = it.ctx;
+        } else {
+          const c = document.createElement('code');
+          c.textContent = it.group;
+          gh.appendChild(c);
+        }
+        group.appendChild(gh);
+        s.appendChild(group);
+      }
+      const row = document.createElement('div');
+      row.className = 'row';
+      const line = document.createElement('p');
+      line.className = 'line';
+      textWithPlaceholders(line, it.text);
+      if (it.own) {
+        const o = document.createElement('span');
+        o.className = 'own';
+        o.textContent = ui.ownBadge;
+        line.appendChild(o);
+      }
+      const b = document.createElement('button');
+      b.className = 'mark';
+      b.type = 'button';
+      b.textContent = ui.mark;
+      b.setAttribute('aria-pressed', 'false');
+      b.setAttribute('aria-label', ui.markLabel);
+      b.addEventListener('click', () => toggle(it));
+      row.append(line, b);
+      if (it.hint) {
+        const hint = document.createElement('p');
+        hint.className = 'hint';
+        hint.textContent = it.hint;
+        row.appendChild(hint);
+      }
+      group.appendChild(row);
+      rows.set(it.id, { row, button: b, item: it, noteEl: null, group, section: s });
+    }
+    list.appendChild(s);
+  }
+
+  function noteFor(r) {
+    if (r.noteEl) return r.noteEl;
+    const wrap = document.createElement('div');
+    wrap.className = 'note';
+    const id = 'note-' + r.item.id;
+    const l = document.createElement('label');
+    l.htmlFor = id;
+    l.textContent = ui.wording;
+    const t = document.createElement('textarea');
+    t.id = id;
+    t.rows = 2;
+    t.addEventListener('input', () => saveNote(r.item, t.value));
+    wrap.append(l, t);
+    r.row.appendChild(wrap);
+    r.noteEl = wrap;
+    return wrap;
+  }
+
+  function paint() {
+    let n = 0;
+    for (const [id, r] of rows) {
+      const f = flags.get(id);
+      const on = !!(f && f.flag);
+      if (on) n++;
+      r.row.classList.toggle('flagged', on);
+      r.button.setAttribute('aria-pressed', on ? 'true' : 'false');
+      r.button.setAttribute('aria-label', on ? ui.unmarkLabel : ui.markLabel);
+      if (on) {
+        const w = noteFor(r);
+        const t = w.querySelector('textarea');
+        if (document.activeElement !== t) t.value = (f && f.note) || '';
+        w.hidden = false;
+      } else if (r.noteEl) {
+        r.noteEl.hidden = true;
+      }
+    }
+    for (const g of list.querySelectorAll('.group')) g.classList.toggle('empty', !g.querySelector('.row.flagged'));
+    for (const s of list.querySelectorAll('section')) s.classList.toggle('empty', !s.querySelector('.row.flagged'));
+    document.getElementById('flagged').textContent = n;
+    document.getElementById('app').classList.toggle('none-flagged', n === 0);
+  }
+
+  function toggle(it) {
+    const cur = flags.get(it.id);
+    const on = !(cur && cur.flag);
+    const note = (cur && cur.note) || '';
+    flags.set(it.id, { flag: on, note });
+    paint();
+    if (on) {
+      const t = rows.get(it.id).noteEl && rows.get(it.id).noteEl.querySelector('textarea');
+      if (t) t.focus({ preventScroll: true });
+    }
+    persist();
+  }
+
+  function saveNote(it, value) {
+    const cur = flags.get(it.id) || { flag: true, note: '' };
+    if (cur.note === value) return;
+    flags.set(it.id, { flag: cur.flag, note: value });
+    persist();
+  }
+
+
+  const PICKS = JSON.parse(document.getElementById('picksdata').textContent);
+  const pickState = new Map();
+  const pickEls = new Map();
+  if (PICKS.length) {
+    document.getElementById('picks').hidden = false;
+    const pl = document.getElementById('picklist');
+    for (const p of PICKS) {
+      const box = document.createElement('div');
+      box.className = 'pick';
+      const c = document.createElement('div'); c.className = 'ctx'; c.textContent = p.ctx || p.key;
+      const o = document.createElement('p'); o.className = 'old'; o.textContent = p.old;
+      const opts = document.createElement('div'); opts.className = 'opts';
+      const buttons = p.options.map((txt, i) => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'opt'; b.textContent = txt;
+        b.setAttribute('aria-pressed', 'false');
+        b.addEventListener('click', () => choose(p, i));
+        opts.appendChild(b);
+        return b;
+      });
+      const lab = document.createElement('label'); lab.className = 'mine'; lab.htmlFor = 'own-' + p.key; lab.textContent = ui.pickOwn;
+      const ta = document.createElement('textarea'); ta.id = 'own-' + p.key; ta.rows = 1;
+      ta.addEventListener('input', () => saveOwn(p, ta.value));
+      box.append(c, o, opts, lab, ta);
+      pl.appendChild(box);
+      pickEls.set(p.key, { buttons, ta });
+    }
+  }
+  function paintPicks() {
+    for (const [key, els] of pickEls) {
+      const s = pickState.get(key) || {};
+      els.buttons.forEach((b, i) => b.setAttribute('aria-pressed', s.choice === i ? 'true' : 'false'));
+      if (document.activeElement !== els.ta) els.ta.value = s.own || '';
+    }
+  }
+  function choose(p, i) {
+    const s = pickState.get(p.key) || {};
+    const choice = s.choice === i ? null : i;
+    pickState.set(p.key, { choice, own: s.own || '' });
+    paintPicks();
+    persist();
+  }
+  function saveOwn(p, value) {
+    const s = pickState.get(p.key) || {};
+    if ((s.own || '') === value) return;
+    pickState.set(p.key, { choice: s.choice ?? null, own: value });
+    persist();
+  }
+  const only = document.getElementById('only');
+  only.addEventListener('click', () => {
+    const on = only.getAttribute('aria-pressed') !== 'true';
+    only.setAttribute('aria-pressed', on ? 'true' : 'false');
+    document.getElementById('app').classList.toggle('hide-unflagged', on);
+  });
+
+  paint();
+
+  const KEY = 'line-review:' + meta.built;
+  function persist() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify({ flags: Array.from(flags.entries()), picks: Array.from(pickState.entries()) }));
+      status.textContent = ui.saved;
+    } catch (e) { status.textContent = ui.storageError; }
+  }
+  try {
+    const saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (saved) {
+      for (const [k, v] of saved.flags || []) {
+        if (rows.has(k) && v && typeof v.flag === 'boolean' && typeof v.note === 'string') flags.set(k, v);
+      }
+      for (const [k, v] of saved.picks || []) {
+        const p = PICKS.find(p => p.key === k);
+        if (p && v && typeof v.own === 'string' && (v.choice === null ||
+            (Number.isInteger(v.choice) && v.choice >= 0 && v.choice < p.options.length))) pickState.set(k, v);
+      }
+      paint(); paintPicks();
+      status.textContent = ui.restored;
+    }
+  } catch (e) { status.textContent = ui.storageError; }
+  document.getElementById('export').addEventListener('click', () => {
+    const text = formatExport(document.title, items, PICKS, flags, pickState, ui);
+    const box = document.getElementById('out');
+    const ta = document.getElementById('outtext');
+    ta.value = text; box.hidden = false; document.getElementById('outlabel').textContent = ui.copyManual;
+    const done = () => { status.textContent = ui.copied; document.getElementById('outlabel').textContent = ui.copyDone; };
+    const fallback = () => { ta.focus(); ta.select(); status.textContent = ui.copyFailed; document.getElementById('outlabel').textContent = ui.copyManual; };
+    try { navigator.clipboard.writeText(text).then(done, fallback); } catch (e) { fallback(); }
+  });
+})();
+</script>
+</body>
+</html>

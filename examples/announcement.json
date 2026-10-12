@@ -1,0 +1,26 @@
+{
+  "lang": "en",
+  "title": "Pocket List announcement",
+  "intro": "Fictional product copy for a practice review. Mark any line you would change.",
+  "sections": [
+    {"id": "announcement", "title": "Announcement", "note": "Draft for the product page."},
+    {"id": "first-run", "title": "First run", "note": "Draft for the first screen and help text."}
+  ],
+  "items": [
+    {"id": "announcement.1", "sec": "announcement", "group": "opening", "ctx": "Opening", "text": "Pocket List keeps the things you need to buy in one place."},
+    {"id": "announcement.2", "sec": "announcement", "group": "opening", "text": "Start a list before you leave home."},
+    {"id": "announcement.3", "sec": "announcement", "group": "opening", "text": "Add an item whenever you think of it."},
+    {"id": "announcement.4", "sec": "announcement", "group": "details", "ctx": "Product details", "text": "Check off each item as it goes into your basket."},
+    {"id": "announcement.5", "sec": "announcement", "group": "details", "text": "Your list stays on this device.", "hint": "A fictional feature claim, not a claim about line-review."},
+    {"id": "announcement.6", "sec": "announcement", "group": "details", "text": "You can use it without an account."},
+    {"id": "first-run.1", "sec": "first-run", "group": "screen", "ctx": "Empty list", "text": "What do you need from the shop?"},
+    {"id": "first-run.2", "sec": "first-run", "group": "screen", "text": "Write your first item."},
+    {"id": "first-run.3", "sec": "first-run", "group": "screen", "text": "Add to list", "hint": "Button label."},
+    {"id": "first-run.4", "sec": "first-run", "group": "help", "ctx": "Help", "text": "Tap an item to check it off."},
+    {"id": "first-run.5", "sec": "first-run", "group": "help", "text": "Tap it again if you checked it by mistake."},
+    {"id": "first-run.6", "sec": "first-run", "group": "help", "text": "Clear checked items when you finish shopping."}
+  ],
+  "picks": [
+    {"key": "announcement.1", "ctx": "Opening sentence", "old": "Pocket List keeps the things you need to buy in one place.", "options": ["Pocket List holds your shopping list.", "Write your shopping list before you head out.", "Keep a list of what you need from the shop."]}
+  ]
+}
